@@ -15,6 +15,14 @@ export function getUser() {
   });
 }
 
+export function login(data: { username: string; password: string }) {
+  return request<any>({
+    url: '/login',
+    method: 'post',
+    data
+  });
+}
+
 export function mockFetchUserInfo() {
   return new Promise<TUser>((resolve, reject) => {
     setTimeout(() => {

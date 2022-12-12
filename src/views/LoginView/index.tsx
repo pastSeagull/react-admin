@@ -1,27 +1,42 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { useMutation } from '@tanstack/react-query';
 import { Button, Form, Input, notification } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 
+import { login } from '@/api';
 import { setToken } from '@/utils';
 
 const LoginView: React.FC = () => {
   const [searchParams] = useSearchParams();
+  const mutation = useMutation((data: { username: string; password: string }) =>
+    login(data)
+  );
 
   const rules = [{ required: true }];
 
-  const onFinish = (values: { username: string; password: string }) => {
-    // FIXME: 提交登录信息
-    console.log('submit', values);
-    setToken('test token');
+  const onFinish = async (values: { username: string; password: string }) => {
+    try {
+      const login = await mutation.mutateAsync(values);
+      if(login.code === 200) {
+        setToken(login.token);
+        notification.success({
+          message: '登录成功，稍后自动跳转',
+          duration: 1,
+        });
 
-    notification.success({
-      message: '登录成功，稍后自动跳转',
-      duration: 1,
-    });
+        setTimeout(() => {
+          window.location.replace(searchParams.get('redirect') ?? '/');
+        }, 1000);
+      } else {
+        notification.error({
+          message: login.msg,
+          duration: 1,
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    }
 
-    setTimeout(() => {
-      window.location.replace(searchParams.get('redirect') ?? '/');
-    }, 1000);
   };
 
   return (
