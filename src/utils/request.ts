@@ -1,9 +1,6 @@
 import type { AxiosError } from 'axios';
 
-import { notification } from 'antd';
 import axios, { type AxiosRequestConfig } from 'axios';
-
-import history from '@/router/history';
 
 import { getToken } from '.';
 
@@ -36,13 +33,7 @@ instance.interceptors.request.use((config) => {
 
 // response interceptor
 instance.interceptors.response.use((response) => {
-  if (response.data.code === 401) {
-    notification.error({
-      message: '身份已过期，请重新登录',
-      duration: 1,
-    });
-    history.push('/login');
-  }
+
   return response.data;
 }, errorHandler);
 

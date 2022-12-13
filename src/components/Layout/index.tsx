@@ -57,7 +57,7 @@ const openKeys = menu.map((item) => String(item?.key));
 export const LayoutContainer: React.FC = () => {
   const navigate = useNavigate();
 
-  const { data: info, error: infoError } = useGetInfo();
+  const { data: info } = useGetInfo();
 
   const mutation = useMutation(() => logout());
 
@@ -102,18 +102,17 @@ export const LayoutContainer: React.FC = () => {
   ];
 
   useEffect(() => {
-    if (infoError) {
-      // FIXME: 根据接口需求修改
-      if (infoError?.status === 401) {
+    if (info) {
+      if (info?.code === 401) {
         notification.open({
-          message: infoError?.msg ?? '出现错误',
+          message: info.msg ?? '出现错误',
           type: 'error',
         });
         clearToken();
         redirectToLogin();
       }
     }
-  }, [infoError, redirectToLogin]);
+  }, [info, redirectToLogin]);
 
   useEffect(() => {
     if (info) {
