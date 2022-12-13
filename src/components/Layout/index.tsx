@@ -6,6 +6,7 @@ import {
   SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons';
+import { useMutation } from '@tanstack/react-query';
 import { notification } from 'antd';
 import { Avatar, Dropdown } from 'antd';
 
@@ -14,6 +15,7 @@ import React, { useCallback, useEffect } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { logout } from '@/api';
 import { useGetInfo } from '@/api/query';
 import { userStore } from '@/store/user';
 import { clearToken } from '@/utils';
@@ -57,18 +59,33 @@ export const LayoutContainer: React.FC = () => {
 
   const { data: info, error: infoError } = useGetInfo();
 
+  const mutation = useMutation(() => logout());
+
   const redirectToLogin = useCallback(() => {
-    navigate(
-      `/login?redirect=${window.location.pathname + window.location.search}`,
-      {
-        replace: true,
-      }
-    );
+    notification.success({
+      message: '退出成功，稍后自动跳转',
+      duration: 1,
+    });
+    setTimeout(() => {
+      navigate(
+        `/login?redirect=${window.location.pathname + window.location.search}`,
+        {
+          replace: true,
+        }
+      );
+    }, 1000);
   }, [navigate]);
 
-  const onLogout = () => {
-    clearToken();
-    redirectToLogin();
+  const onLogout = async () => {
+    try {
+      const out = await mutation.mutateAsync();
+      if(out.code === 200) {
+        clearToken();
+        redirectToLogin();
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const items: MenuProps['items'] = [

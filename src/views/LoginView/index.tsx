@@ -58,7 +58,7 @@ const LoginView: React.FC = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" block htmlType="submit">
+              <Button type="primary" block htmlType="submit" loading={mutation.isLoading}>
                 登录
               </Button>
             </Form.Item>
