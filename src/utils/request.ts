@@ -1,11 +1,13 @@
 import type { AxiosError } from 'axios';
 
+import { notification } from 'antd';
 import axios, { type AxiosRequestConfig } from 'axios';
+
+import history from '@/router/history';
 
 import { getToken } from '.';
 
 const instance = axios.create({
-  // FIXME: 根据实际项目的 baseURL 配置
   baseURL: '/api',
 });
 
@@ -34,7 +36,13 @@ instance.interceptors.request.use((config) => {
 
 // response interceptor
 instance.interceptors.response.use((response) => {
-  // FIXME: 返回 response.data ，如果不需要可自行修改
+  if (response.data.code === 401) {
+    notification.error({
+      message: '身份已过期，请重新登录',
+      duration: 1,
+    });
+    history.push('/login');
+  }
   return response.data;
 }, errorHandler);
 

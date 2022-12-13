@@ -15,13 +15,10 @@ export function getUser() {
   });
 }
 
-export function login(data: { username: string; password: string }) {
-  return request<any>({
-    url: '/login',
-    method: 'post',
-    data
-  });
-}
+export const login = (data: { username: string; password: string }) =>
+  request<any>({ url: '/login', method: 'post', data });
+
+export const getInfo = () => request<any>({ url: '/getInfo', method: 'get' });
 
 export function mockFetchUserInfo() {
   return new Promise<TUser>((resolve, reject) => {

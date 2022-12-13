@@ -14,7 +14,7 @@ import React, { useCallback, useEffect } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { useCurrentUserInfo } from '@/api/query';
+import { useGetInfo } from '@/api/query';
 import { userStore } from '@/store/user';
 import { clearToken } from '@/utils';
 import { APP_TITLE } from '@/utils/constant';
@@ -54,8 +54,8 @@ const openKeys = menu.map((item) => String(item?.key));
 
 export const LayoutContainer: React.FC = () => {
   const navigate = useNavigate();
-  // FIXME: 模拟获取用户
-  const { data: user, error } = useCurrentUserInfo();
+
+  const { data: info, error: infoError } = useGetInfo();
 
   const redirectToLogin = useCallback(() => {
     navigate(
@@ -85,24 +85,24 @@ export const LayoutContainer: React.FC = () => {
   ];
 
   useEffect(() => {
-    if (error) {
+    if (infoError) {
       // FIXME: 根据接口需求修改
-      if (error?.status === 401) {
+      if (infoError?.status === 401) {
         notification.open({
-          message: error?.msg ?? '出现错误',
+          message: infoError?.msg ?? '出现错误',
           type: 'error',
         });
         clearToken();
         redirectToLogin();
       }
     }
-  }, [error, redirectToLogin]);
+  }, [infoError, redirectToLogin]);
 
   useEffect(() => {
-    if (user) {
-      userStore.user = user;
+    if (info) {
+      userStore.user = info?.user?.nickName;
     }
-  }, [user]);
+  }, [info]);
 
   return (
     <StyleBox>
@@ -116,12 +116,12 @@ export const LayoutContainer: React.FC = () => {
             <Dropdown menu={{ items }} trigger={['click']}>
               <div className="h-full flex items-center cursor-pointer hover:bg-gray-100 px-4">
                 <Avatar
-                  src={user?.logo}
-                  alt={user?.name}
+                  src={info?.user?.avatar}
+                  alt={info?.user?.nickName}
                   size={30}
                   icon={<UserOutlined />}
                 />
-                <span className="ml-2 text-sm">{user?.name}</span>
+                <span className="ml-2 text-sm">{info?.user?.nickName}</span>
               </div>
             </Dropdown>
           </div>
