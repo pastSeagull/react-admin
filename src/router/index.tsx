@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 
 import { Result, Spin } from 'antd';
-import { lazy } from 'react';
 
 import { Suspense } from 'react';
 import {
@@ -19,7 +18,7 @@ import NotFoundView from '@/views/404';
 import HomeView from '@/views/HomeView';
 import LoginView from '@/views/LoginView';
 
-const UsersView = lazy(() => import('@/views/UsersView'));
+import { routeElement } from './routeElement';
 
 const LazyContainer: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
@@ -63,14 +62,17 @@ const router = createBrowserRouter(
         children={
           <>
             <Route path="" element={<HomeView />} />
-            <Route
-              path="users"
-              element={
-                <LazyContainer>
-                  <UsersView />
-                </LazyContainer>
-              }
-            />
+            {routeElement.map((el) => (
+              <Route
+                key={el.path}
+                path={el.path}
+                element={
+                  <LazyContainer>
+                    <el.element />
+                  </LazyContainer>
+                }
+              />
+            ))}
             <Route path="*" element={<NotFoundView />} />
           </>
         }

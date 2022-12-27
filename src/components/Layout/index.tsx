@@ -1,7 +1,6 @@
 import type { MenuProps } from 'antd';
 
 import {
-  HomeOutlined,
   LogoutOutlined,
   SettingOutlined,
   UserOutlined,
@@ -16,7 +15,7 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { logout } from '@/api';
-import { useGetInfo } from '@/api/query';
+import { useGetInfo, useGetRouters } from '@/api/query';
 import { userStore } from '@/store/user';
 import { clearToken } from '@/utils';
 import { APP_TITLE } from '@/utils/constant';
@@ -33,31 +32,12 @@ const StyleBox = styled.div`
   }
 `;
 
-const menu: MenuProps['items'] = [
-  {
-    icon: <HomeOutlined />,
-    label: '首页',
-    key: '/',
-  },
-  {
-    icon: <UserOutlined />,
-    key: 'user',
-    label: '用户管理',
-    children: [
-      {
-        key: '/users',
-        label: '用户列表',
-      },
-    ],
-  },
-];
-
-const openKeys = menu.map((item) => String(item?.key));
-
 export const LayoutContainer: React.FC = () => {
   const navigate = useNavigate();
 
   const { data: info } = useGetInfo();
+  const { data: router } = useGetRouters();
+  const menu = router?.data;
 
   const mutation = useMutation(() => logout());
 
@@ -150,7 +130,6 @@ export const LayoutContainer: React.FC = () => {
               defaultSelectedKeys={[window.location.pathname]}
               style={{ height: '100%', borderRight: 0 }}
               items={menu}
-              defaultOpenKeys={openKeys}
               onSelect={(val) => {
                 navigate(val.key);
               }}

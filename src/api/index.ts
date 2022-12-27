@@ -14,3 +14,5 @@ export const login = (data: { username: string; password: string }) =>
 export const getInfo = () => request<any>({ url: '/getInfo', method: 'get' });
 
 export const logout = () => request<any>({ url: '/logout', method: 'get' });
+
+export const getRouters = () => request<any>({ url: 'getRouters', method: 'get' });
