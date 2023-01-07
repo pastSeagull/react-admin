@@ -1,8 +1,8 @@
-import { lazy } from "react";
+import { lazy } from 'react';
 
 export const routeElement = [
   {
     path: 'user',
-    element: lazy(() => import('@/views/UsersView'))
-  }
+    element: lazy(() => import('@/views/UsersView')),
+  },
 ];

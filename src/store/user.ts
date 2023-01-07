@@ -12,3 +12,11 @@ export const useUserStore = () => {
 
   return snap;
 };
+
+export const userRouter = proxy<{
+  data?: any
+}>({});
+
+export const useGetRouter = () => {
+  return useSnapshot(userRouter);
+};

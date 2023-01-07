@@ -16,7 +16,6 @@ import styled from 'styled-components';
 
 import { logout } from '@/api';
 import { useGetInfo, useGetRouters } from '@/api/query';
-import { userStore } from '@/store/user';
 import { clearToken } from '@/utils';
 import { APP_TITLE } from '@/utils/constant';
 
@@ -59,7 +58,7 @@ export const LayoutContainer: React.FC = () => {
   const onLogout = async () => {
     try {
       const out = await mutation.mutateAsync();
-      if(out.code === 200) {
+      if (out.code === 200) {
         clearToken();
         redirectToLogin();
       }
@@ -93,12 +92,6 @@ export const LayoutContainer: React.FC = () => {
       }
     }
   }, [info, redirectToLogin]);
-
-  useEffect(() => {
-    if (info) {
-      userStore.user = info?.user?.nickName;
-    }
-  }, [info]);
 
   return (
     <StyleBox>
